@@ -7,3 +7,4 @@ line = file.readline()
 while line:
     info = line.split()
     line = file.readline()
+a = [None]

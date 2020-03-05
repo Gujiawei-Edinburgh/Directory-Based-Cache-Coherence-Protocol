@@ -28,7 +28,7 @@ def main(argv):
     cacheInvalid = 0; cacheShared = 1; cacheModified = 2#cache states
     ADD = 1;REMOVE = 0
 
-    file = open(argv[1])
+    file = open("trace.txt")
     line = file.readline()
     #---statistics information---#
     latencyList = []
@@ -111,18 +111,19 @@ def main(argv):
                     processor.updateCacheState(address,cacheShared)
                 elif processor.missType == WtMiss:
                     memory.updateDirectoryState(address,EXCLUSIVE)
-                    memory.updateSharers(processor,address,ADD,True)
                     closest,farSharers = memory.getClosestAndFarSharers(processor,address,topology)
+                    memory.updateSharers(processor,address,ADD,True)
                     latency += memory.sendMessageToSharersAndRequester()
                     timeConsume = [0]*(len(farSharers) + 1)
                     jobList = [closest]+farSharers
-                    for i in range(0,len(jobList)):
-                        if i == 0 and processor.getCacheState(address) == cacheInvalid:
-                            timeConsume[i] = 2
-                        else:
-                            timeConsume[i] = 1
-                        jobList[i].updateCacheState(address,cacheInvalid)
-                        timeConsume[i] += jobList[i].sendMessageToProcessor(processor)
+                    if jobList[0] is not None:
+                        for i in range(0,len(jobList)):
+                            if i == 0 and processor.getCacheState(address) == cacheInvalid:
+                                timeConsume[i] = 2
+                            else:
+                                timeConsume[i] = 1
+                            jobList[i].updateCacheState(address,cacheInvalid)
+                            timeConsume[i] += jobList[i].sendMessageToProcessor(processor)
                     invalidationSent += len(jobList)
                     latency += max(timeConsume)+processor.getDataFromCache()
                     processor.updateCacheState(address,cacheModified)

@@ -120,7 +120,7 @@ class Directory(object):
     def __init__(self):
         self.block = [0]*17000
         self.states = [0]*17000
-        self.shares = [[0]*4]*17000
+        self.shares = [[0] * 4 for _ in range(17000)]
 
 class Memory(object):
     def __init__(self):
@@ -147,8 +147,8 @@ class Memory(object):
     
     def updateSharers(self,processor,address,isAdd,exclusive = False):
         if exclusive:
-            for each in self.directory.shares[address]:
-                each = 0
+            for index in range(0,4):
+                self.directory.shares[address][index] = 0
         self.directory.shares[address][processor.getProcessorId()] = (isAdd if (isAdd == 1) else 0)
     
     def handleReplace(self,processor):
@@ -171,17 +171,18 @@ class Memory(object):
         farSharers = []
         closestSharer = []
         closest = None
-        for node in shareVector:
-            if node != 0:
-                index = shareVector.index(node)
+        for index in range(0,len(shareVector)):
+            if index == processor.getProcessorId():
+                continue
+            if shareVector[index] != 0:
                 if index in neighbourId:
                     closestSharer.append(topology['P'+str(index)])
                 else:
                     farSharers.append(topology['P'+str(index)])
-        if len(closestSharer) == 0:
+        if len(closestSharer) == 0 and len(farSharers) != 0:
             closest = farSharers[0]
             farSharers.remove(closest)
-        else:
+        elif len(closestSharer) != 0:
             closest = closestSharer[0]
             closestSharer.remove(closest)
             farSharers = farSharers + closestSharer
