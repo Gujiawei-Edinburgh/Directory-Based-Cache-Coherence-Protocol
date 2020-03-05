@@ -1,4 +1,4 @@
-# Directory-Based-Cache-Coherence-Protocol
+# Directory-Based Cache Coherence Protocol
 ## Cache Protocol Simulator Implementation
 Directory-based cache coherence protocol was implemented. The topology of processors' laypout is circle. It can calculate the latency of each instrcution. The way of mapping is direct mapping.
 ## Optimization
