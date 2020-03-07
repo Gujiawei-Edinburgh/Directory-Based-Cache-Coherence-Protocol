@@ -28,7 +28,7 @@ def main(argv):
     cacheInvalid = 0; cacheShared = 1; cacheModified = 2#cache states
     ADD = 1;REMOVE = 0
 
-    file = open("trace.txt")
+    file = open(argv[1])
     line = file.readline()
     #---statistics information---#
     latencyList = []
